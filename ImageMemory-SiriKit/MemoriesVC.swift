@@ -285,20 +285,22 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
         audioRecorder?.stop()
         
         if success {
+            
+            // MOVE THE RECORDING TO THE CORRECT FILE NAME
             do {
-                // 3
+                // 3 Create a file url out of the active memory url
                 let memoryAudioURL = activeMemoryURL.appendingPathComponent("m4a")
                 let fm = FileManager.default
                 
-                // 4
+                // 4 If the file already exists then delete it because we can't move a file over one that already exists
                 if fm.fileExists(atPath: memoryAudioURL.path) {
                     try fm.removeItem(at: memoryAudioURL)
                 }
                 
-                // 5
+                // 5 Move recorded file into memories audio url
                 try fm.moveItem(at: recordingURL, to: memoryAudioURL)
                 
-                //6
+                //6 Kick off transcription process
                 transcribeAudio(memory: activeMemoryURL)
                  print("SUCCESSFULLY FINISHED RECORDING 2/2")
             } catch let error {
