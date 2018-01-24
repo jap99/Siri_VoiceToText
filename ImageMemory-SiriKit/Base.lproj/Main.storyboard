@@ -59,7 +59,7 @@
         <!--Image Memories-->
         <scene sceneID="gA0-KJ-y9a">
             <objects>
-                <collectionViewController title="Image Memories" id="WXW-bi-vdY" customClass="MemoriesVC" customModule="ImageMemory_SiriKit" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController id="WXW-bi-vdY" customClass="MemoriesVC" customModule="ImageMemory_SiriKit" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="jDz-nQ-UEz">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -71,7 +71,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MemoryCell" id="d9t-za-BnS" customClass="MemoryCell" customModule="ImageMemory_SiriKit" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Memory" id="d9t-za-BnS" customClass="MemoryCell" customModule="ImageMemory_SiriKit" customModuleProvider="target">
                                 <rect key="frame" x="87.5" y="50" width="200" height="200"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -98,13 +98,12 @@
                             <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
-                                <searchBar contentMode="redraw" fixedFrame="YES" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="8vv-PV-aG3">
+                                <searchBar contentMode="redraw" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="8vv-PV-aG3">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     <textInputTraits key="textInputTraits"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="color" keyPath="searchField.textColor">
-                                            <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="value" red="0.9608221663411608" green="1" blue="0.44907727563599709" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
                                     <connections>
@@ -112,6 +111,11 @@
                                     </connections>
                                 </searchBar>
                             </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="8vv-PV-aG3" secondAttribute="trailing" id="cbv-pX-R9q"/>
+                                <constraint firstItem="8vv-PV-aG3" firstAttribute="top" secondItem="qyx-0Q-Dkx" secondAttribute="top" id="j6Z-5n-jgh"/>
+                                <constraint firstItem="8vv-PV-aG3" firstAttribute="leading" secondItem="qyx-0Q-Dkx" secondAttribute="leading" id="kkb-LH-ArM"/>
+                            </constraints>
                         </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="WXW-bi-vdY" id="Nmf-96-KZX"/>

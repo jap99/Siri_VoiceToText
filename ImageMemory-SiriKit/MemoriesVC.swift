@@ -11,7 +11,7 @@ import AVFoundation
 import Photos
 import Speech
 
-class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegateFlowLayout {
 
     var memories = [URL]()
    
@@ -70,7 +70,11 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
         
         // Attempt to load all the memories in our documents directory
         guard let files = try? // because it may fail if we have missing permissions
-            FileManager.default.contentsOfDirectory(at: getDocumentDirectory(), includingPropertiesForKeys: nil, options: []) else { return }
+            FileManager.default.contentsOfDirectory(at: getDocumentDirectory(), includingPropertiesForKeys: nil, options: [])
+            else {
+                return
+                
+        }
         
         // Loop over every file found
         for file in files {
@@ -90,7 +94,9 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
         }
         // Reload our list of memories
             // Section 0 is the search box; 1 is the pictures
+        
         collectionView?.reloadSections(IndexSet(integer: 1))
+      
     }
     
     @objc func addTapped() {
@@ -166,6 +172,63 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
     }
     
     
+    // MARK: COLLECTION VIEW
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if section == 0 {
+            return 0
+        } else {
+            return memories.count
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        // Dequeue and setup with thumbnail
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Memory", for: indexPath) as! MemoryCell
+        
+        let memory = memories[indexPath.row]
+        let imageName = thumbnailURL(for: memory).path
+        let image = UIImage.init(contentsOfFile: imageName)
+        
+        cell.imageView.image = image
+        
+        return cell
+    }
+    
+    func imageURL(for memory: URL) -> URL {
+        return memory.appendingPathExtension("jpg")
+    }
+    
+    func thumbnailURL(for memory: URL) -> URL {
+        return memory.appendingPathExtension("thumb")
+    }
+    
+    func audioURL(for memory: URL) -> URL {
+        return memory.appendingPathExtension("m4a")
+    }
+    
+    func transcriptionURL(for memory: URL) -> URL {
+        return memory.appendingPathExtension("txt")
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        if section == 1 {
+            return CGSize.zero
+        } else {
+            return CGSize(width: 0, height: 50)
+        }
+    }
     
     
 }
