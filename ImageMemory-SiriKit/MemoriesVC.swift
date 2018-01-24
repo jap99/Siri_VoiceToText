@@ -11,7 +11,7 @@ import AVFoundation
 import Photos
 import Speech
 
-class MemoriesVC: UICollectionViewController {
+class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     var memories = [URL]()
    
@@ -19,6 +19,7 @@ class MemoriesVC: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         loadMemories()
         
     }
@@ -91,6 +92,79 @@ class MemoriesVC: UICollectionViewController {
             // Section 0 is the search box; 1 is the pictures
         collectionView?.reloadSections(IndexSet(integer: 1))
     }
+    
+    @objc func addTapped() {
+        let vc = UIImagePickerController()
+        vc.modalPresentationStyle = .formSheet
+        vc.delegate = self
+        navigationController?.present(vc, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        dismiss(animated: true, completion: nil)
+        
+        if let possibleImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            saveNewMemory(image: possibleImage)
+            loadMemories()
+        }
+    }
+    
+    func saveNewMemory(image: UIImage) {
+        
+        // Create unique name for the memory by time to load in order
+        let memoryName = "memory-\(Date().timeIntervalSince1970)"
+        
+        // Use the unique name to create file names for the full size image and the thumbnail
+        let imageName = memoryName + ".jpg"
+        let thumbnailName = memoryName + ".thumb"
+        
+        do {
+            // Create a URL where we can write the JPEG to
+            let imagePath = getDocumentDirectory().appendingPathComponent(imageName)
+            
+            // Convert UIImage into a JPEG data object
+            if let jpegData = UIImageJPEGRepresentation(image, 80) {
+                
+                // Write that data to the URL we've already created
+                try jpegData.write(to: imagePath, options: [.atomicWrite])
+            }
+            // Create thumbnail here
+            if let thumbnail = resize(image: image, to: 200) {
+                let imagePath = getDocumentDirectory().appendingPathComponent(thumbnailName)
+                if let jpegData = UIImageJPEGRepresentation(thumbnail, 80) {
+                    try jpegData.write(to: imagePath, options: [.atomicWrite])
+                }
+            }
+        } catch {
+            print("FAILED TO SAVE TO DISK")
+        }
+        
+        
+    }
+    
+    func resize(image: UIImage, to width: CGFloat) -> UIImage? {
+        
+        // Calculate how much we need to bring the width down to match our target size
+        let scale = width / image.size.width
+        
+        // Bring height down by the same amount so aspect ratio's preserved
+        let height = image.size.height * scale
+        
+        // Create a new image context we can draw into with a size we specify
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), false, 0)
+        
+        // Draw the original image into the context
+        image.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+        
+        // Pull out the resized version
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        // End the context so UIKit can clean up
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
+    
     
     
     
