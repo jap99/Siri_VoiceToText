@@ -12,6 +12,8 @@
 		9F698468201901B700215753 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F698466201901B700215753 /* Main.storyboard */; };
 		9F69846A201901B700215753 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F698469201901B700215753 /* Assets.xcassets */; };
 		9F69846D201901B700215753 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F69846B201901B700215753 /* LaunchScreen.storyboard */; };
+		9F69847520190A1B00215753 /* MemoriesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F69847420190A1B00215753 /* MemoriesVC.swift */; };
+		9F69847720190AA100215753 /* MemoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F69847620190AA100215753 /* MemoryCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		9F698469201901B700215753 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F69846C201901B700215753 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9F69846E201901B700215753 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9F69847420190A1B00215753 /* MemoriesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoriesVC.swift; sourceTree = "<group>"; };
+		9F69847620190AA100215753 /* MemoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				9F698469201901B700215753 /* Assets.xcassets */,
 				9F69846B201901B700215753 /* LaunchScreen.storyboard */,
 				9F69846E201901B700215753 /* Info.plist */,
+				9F69847420190A1B00215753 /* MemoriesVC.swift */,
+				9F69847620190AA100215753 /* MemoryCell.swift */,
 			);
 			path = "ImageMemory-SiriKit";
 			sourceTree = "<group>";
@@ -136,7 +142,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F69847720190AA100215753 /* MemoryCell.swift in Sources */,
 				9F698465201901B700215753 /* ViewController.swift in Sources */,
+				9F69847520190A1B00215753 /* MemoriesVC.swift in Sources */,
 				9F698463201901B700215753 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
