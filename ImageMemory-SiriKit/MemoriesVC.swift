@@ -13,12 +13,13 @@ import Speech
 
 // NOTES: A MEMORY HAS A THUMBNAIL, IMAGE, AUDIO, & TEXT and are linked by having the same file name with different extensions
 
-class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegateFlowLayout, AVAudioRecorderDelegate, AVAudioRecorderDelegate {
+class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegateFlowLayout, AVAudioRecorderDelegate {
 
     var memories = [URL]()
     var activeMemoryURL: URL!
     var recordingURL: URL!
     var audioRecorder: AVAudioRecorder?
+    var audioPlayer: AVAudioPlayer?
     
     
     
@@ -184,44 +185,7 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
     }
     
     
-    // MARK: COLLECTION VIEW
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 0
-        } else {
-            return memories.count
-        }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        // Dequeue and setup with thumbnail
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Memory", for: indexPath) as! MemoryCell
-        
-        let memory = memories[indexPath.row]
-        let imageName = thumbnailURL(for: memory).path
-        let image = UIImage.init(contentsOfFile: imageName)
-        
-        cell.imageView.image = image
-        
-        // Long press
-        if cell.gestureRecognizers == nil {
-            let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(imageLongPress))
-            recognizer.minimumPressDuration = 0.25
-            cell.addGestureRecognizer(recognizer)
-            
-            cell.layer.borderColor = UIColor.white.cgColor
-            cell.layer.borderWidth = 3
-            cell.layer.cornerRadius = 10
-        }
-        
-        return cell
-    }
+
     
     @objc func imageLongPress(sender: UILongPressGestureRecognizer) {
     
@@ -240,6 +204,9 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
 }
     
     func performMicRecordMemory() {
+        
+        // stop a recording if one is in progress
+        audioPlayer?.stop()
         
         // background changes when pressed
         collectionView?.backgroundColor = UIColor(red: 0.5, green: 0, blue: 0, alpha: 1)
@@ -289,7 +256,7 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
             // MOVE THE RECORDING TO THE CORRECT FILE NAME
             do {
                 // 3 Create a file url out of the active memory url
-                let memoryAudioURL = activeMemoryURL.appendingPathComponent("m4a")
+                let memoryAudioURL = activeMemoryURL.appendingPathExtension("m4a")
                 let fm = FileManager.default
                 
                 // 4 If the file already exists then delete it because we can't move a file over one that already exists
@@ -363,6 +330,69 @@ class MemoriesVC: UICollectionViewController, UIImagePickerControllerDelegate, U
         return memory.appendingPathExtension("txt")
     }
     
+    
+    // MARK: COLLECTION VIEW
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if section == 0 {
+            return 0
+        } else {
+            return memories.count
+        }
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        // Dequeue and setup with thumbnail
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Memory", for: indexPath) as! MemoryCell
+        
+        let memory = memories[indexPath.row]
+        let imageName = thumbnailURL(for: memory).path
+        let image = UIImage.init(contentsOfFile: imageName)
+        
+        cell.imageView.image = image
+        
+        // Long press
+        if cell.gestureRecognizers == nil {
+            let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(imageLongPress))
+            recognizer.minimumPressDuration = 0.25
+            cell.addGestureRecognizer(recognizer)
+            
+            cell.layer.borderColor = UIColor.white.cgColor
+            cell.layer.borderWidth = 3
+            cell.layer.cornerRadius = 10
+        }
+        
+        return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Trigger audio playback
+        
+        let memory = memories[indexPath.row]
+        let fm = FileManager.default
+        
+        do {
+            let audioName = audioURL(for: memory)
+            let transcriptionName = transcriptionURL(for: memory)
+            
+            if fm.fileExists(atPath: audioName.path) {
+                audioPlayer = try AVAudioPlayer(contentsOf: audioName)
+                audioPlayer?.play()
+            }
+            
+            if fm.fileExists(atPath: transcriptionName.path) {
+                let contents = try String(contentsOf: transcriptionName)
+                print("PRINTING CONTENTS - CONTENTS: \(contents)")
+            }
+        } catch {
+            print("ERROR LOADING AUDIO")
+        }
+    }
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath)
